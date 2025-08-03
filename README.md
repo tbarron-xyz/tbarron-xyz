@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @tbarron-xyz
-- 👀 I’m interested in ... apps; infra; performance; math; parallelism
+- 👀 I’m interested in ... apps; infra; performance; math; parallelism; realtime data sources
 - 🌱 I’m currently learning ... 🦀 
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me ...
