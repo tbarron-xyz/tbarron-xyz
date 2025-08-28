@@ -1,5 +1,5 @@
 - 👋 Hi, I’m @tbarron-xyz
-- 👀 I’m interested in ... apps; infra; performance; math; parallelism; realtime data sources; AI tool use
+- 👀 I’m interested in ... apps; infra; performance; math; parallelism; realtime data sources; agentic tool use
 - 🌱 I’m currently learning ... 🦀 
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me ...
