@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tbarron-xyz Repositories</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1f2937',
+                        secondary: '#374151',
+                        accent: '#3b82f6'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-primary mb-4">tbarron-xyz Repositories</h1>
+            <p class="text-lg text-secondary">Explore my public GitHub repositories</p>
+        </header>
+
+        <div id="loading" class="text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+            <p class="mt-2 text-secondary">Loading repositories...</p>
+        </div>
+
+        <div id="repos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
+
+        <div id="error" class="text-center text-red-600 hidden">
+            <p>Failed to load repositories. Please try again later.</p>
+        </div>
+    </div>
+
+    <script>
+        async function fetchRepos() {
+            try {
+                const response = await fetch('https://api.github.com/users/tbarron-xyz/repos?sort=updated&per_page=100');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch repositories');
+                }
+                const repos = await response.json();
+                displayRepos(repos);
+            } catch (error) {
+                console.error('Error fetching repositories:', error);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').classList.remove('hidden');
+            }
+        }
+
+        function displayRepos(repos) {
+            const reposContainer = document.getElementById('repos');
+            const loading = document.getElementById('loading');
+
+            loading.classList.add('hidden');
+            reposContainer.classList.remove('hidden');
+
+            repos.forEach(repo => {
+                const repoCard = createRepoCard(repo);
+                reposContainer.appendChild(repoCard);
+            });
+        }
+
+        function createRepoCard(repo) {
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300';
+
+            const updatedDate = new Date(repo.updated_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+
+            const languageColor = getLanguageColor(repo.language);
+
+            card.innerHTML = `
+                <h3 class="text-xl font-semibold text-primary mb-2">
+                    <a href="${repo.html_url}" target="_blank" class="hover:text-accent transition-colors duration-200">
+                        ${repo.name}
+                    </a>
+                </h3>
+                <p class="text-secondary mb-4 line-clamp-3">${repo.description || 'No description available'}</p>
+                <div class="flex items-center justify-between text-sm">
+                    <div class="flex items-center space-x-4">
+                        ${repo.language ? `
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full mr-2" style="background-color: ${languageColor}"></div>
+                                <span class="text-secondary">${repo.language}</span>
+                            </div>
+                        ` : ''}
+                        <div class="flex items-center text-secondary">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            ${repo.stargazers_count}
+                        </div>
+                        <div class="flex items-center text-secondary">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 010 14h-1a1 1 0 110-2h1a5 5 0 000-10H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            ${repo.forks_count}
+                        </div>
+                    </div>
+                    <span class="text-secondary">Updated ${updatedDate}</span>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function getLanguageColor(language) {
+            const colors = {
+                JavaScript: '#f1e05a',
+                TypeScript: '#2b7489',
+                Python: '#3572A5',
+                Java: '#b07219',
+                'C++': '#f34b7d',
+                'C#': '#178600',
+                PHP: '#4F5D95',
+                Ruby: '#701516',
+                Go: '#00ADD8',
+                Rust: '#dea584',
+                HTML: '#e34c26',
+                CSS: '#563d7c',
+                Vue: '#2c3e50',
+                React: '#61dafb',
+                Shell: '#89e051'
+            };
+            return colors[language] || '#586069';
+        }
+
+        // Fetch repositories when page loads
+        fetchRepos();
+    </script>
+
+    <style>
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</body>
+</html>
