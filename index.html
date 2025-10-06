@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>tbarron-xyz</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -69,7 +70,7 @@
 
         function createRepoCard(repo) {
             const card = document.createElement('div');
-            card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300';
+            card.className = 'bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 relative';
 
             const updatedDate = new Date(repo.updated_at).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -111,6 +112,9 @@
                 </div>
             `;
 
+            card.addEventListener('mouseenter', (e) => showHover(repo, e));
+            card.addEventListener('mouseleave', hideHover);
+
             return card;
         }
 
@@ -133,6 +137,45 @@
                 Shell: '#89e051'
             };
             return colors[language] || '#586069';
+        }
+
+        let hoverDiv = null;
+
+        async function showHover(repo, event) {
+            if (hoverDiv) return;
+            const card = event.target.closest('.bg-white');
+            const reposContainer = document.getElementById('repos');
+            const cards = reposContainer.querySelectorAll('.bg-white');
+            const index = Array.from(cards).indexOf(card);
+            const columns = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+            hoverDiv = document.createElement('div');
+            hoverDiv.className = 'absolute bg-gray-200 border border-gray-300 shadow-lg z-50 w-96 h-72 overflow-auto p-4';
+            if ((index % columns) === (columns - 1)) {
+                hoverDiv.style.left = 'calc(-100% - 10px)';
+            } else {
+                hoverDiv.style.left = 'calc(100% + 10px)';
+            }
+            hoverDiv.style.top = '0';
+            card.appendChild(hoverDiv);
+
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/tbarron-xyz/${repo.name}/${repo.default_branch}/README.md`);
+                if (response.ok) {
+                    const markdown = await response.text();
+                    hoverDiv.innerHTML = marked.parse(markdown);
+                } else {
+                    hoverDiv.innerHTML = '<p>README not found</p>';
+                }
+            } catch (error) {
+                hoverDiv.innerHTML = '<p>Error loading README</p>';
+            }
+        }
+
+        function hideHover() {
+            if (hoverDiv) {
+                hoverDiv.parentNode.removeChild(hoverDiv);
+                hoverDiv = null;
+            }
         }
 
         // Fetch repositories when page loads
