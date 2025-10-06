@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tbarron-xyz Repositories</title>
+    <title>tbarron-xyz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#1f2937',
-                        secondary: '#374151',
-                        accent: '#3b82f6'
+                        primary: '#0f172a',
+                        secondary: '#1e293b',
+                        accent: '#475569'
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-200 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <header class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-primary mb-4">tbarron-xyz Repositories</h1>
-            <p class="text-lg text-secondary">Explore my public GitHub repositories</p>
+            <h1 class="text-4xl font-bold text-primary mb-4">tbarron-xyz</h1>
+            <p class="text-lg text-secondary">My public GitHub repositories</p>
         </header>
 
         <div id="loading" class="text-center">
@@ -33,7 +33,7 @@
 
         <div id="repos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden"></div>
 
-        <div id="error" class="text-center text-red-600 hidden">
+        <div id="error" class="text-center text-gray-600 hidden">
             <p>Failed to load repositories. Please try again later.</p>
         </div>
     </div>
